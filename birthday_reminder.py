@@ -1,28 +1,26 @@
-from datetime import date, timedelta
+from datetime import date
 
 users = [
-    {"name": "Marta", "birthday": date(1994, 4, 23)},
-    {"name": "Magdalena", "birthday": date(1994, 7, 8)},
-    {"name": "Milena", "birthday": date(1994, 7, 19)},
-    {"name": "Paulina", "birthday": date(1994, 3, 7)},
-    {"name": "Justyna", "birthday": date(1995, 10, 29)},
-    {"name": "Marcin", "birthday": date(1994, 11, 4)},
+    {"name": "Marta", "birthday": date(1994, 11, 1)},
+    {"name": "Magdalena", "birthday": date(1994, 11, 3)},
+    {"name": "Milena", "birthday": date(1994, 11, 4)},
+    {"name": "Paulina", "birthday": date(1994, 11, 5)},
+    {"name": "Justyna", "birthday": date(1995, 11, 6)},
+    {"name": "Marcin", "birthday": date(1994, 11, 9)},
 ]
 
 
 def get_birthday_per_week(users):
-
     today = date.today()
-
-    tomorrow = today + timedelta(days=1)
-
-    day_after_week = today + timedelta(days=7)
-
     birthday_dict = {i: [] for i in range(7)}
 
     for user in users:
-        if tomorrow.timetuple()[1:3] <= user["birthday"].timetuple()[1:3] and day_after_week.timetuple()[1:3] >= user["birthday"].timetuple()[1:3]:
-            day_of_week = user["birthday"].weekday()
+        days_until_birthday = (user["birthday"].replace(
+            year=today.year) - today).days
+        if 0 <= days_until_birthday < 7:
+            day_of_week = (today.weekday() + days_until_birthday) % 7
+            if day_of_week >= 5:
+                day_of_week = 0
             birthday_dict[day_of_week].append(user["name"])
 
     days_of_week = ["Monday", "Tuesday", "Wednesday",
@@ -30,10 +28,7 @@ def get_birthday_per_week(users):
 
     for day, names in birthday_dict.items():
         if names:
-            if day in [5, 6]:  # 5 to sobota, 6 to niedziela
-                print(f"Monday: {', '.join(names)}")
-            else:
-                print(f"{days_of_week[day]}: {', '.join(names)}")
+            print(f"{days_of_week[day]}: {', '.join(names)}")
 
 
 get_birthday_per_week(users)
